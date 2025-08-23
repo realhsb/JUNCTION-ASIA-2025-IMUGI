@@ -17,8 +17,10 @@ struct MapView: View {
         )
     )
     
+    @State private var showAnnotationPanel = false
     @State private var showSliderPanel = false
     @State private var heatOpacity: Double = 0.26
+    @State private var touchedCoordinate: CLLocationCoordinate2D = .init()
     
     // 전체 24시간 데이터셋 (한번에 생성되어 저장)
     let fireRiskDataset = FireRiskDataGenerator.generateFullDataset()
@@ -30,14 +32,19 @@ struct MapView: View {
         ZStack {
             Map(position: $cameraPosition) {
                 // 선택된 시간대의 데이터 표시
-                ForEach(fireRiskDataset.getData(forHour: selectedHour)) { point in
-                    if heatOpacity <= point.riskLevel {
-                        MapCircle(
-                            center: point.coordinate,
-                            radius: CLLocationDistance(400)
-                        )
-                        .foregroundStyle(.red)
-                        .stroke(.black, lineWidth: 1)
+                if showAnnotationPanel {
+                    ForEach(fireRiskDataset.getData(forHour: selectedHour)) { point in
+                        if heatOpacity <= point.riskLevel {
+                            Annotation("", coordinate: point.coordinate) {
+                                Circle()
+                                    .fill(.red.opacity(0.8))
+                                    .stroke(.red, lineWidth: 1)
+                                    .frame(width: 15, height: 15)
+                                    .onTapGesture {
+                                        touchedCoordinate = point.coordinate
+                                    }
+                            }
+                        }
                     }
                 }
             }
@@ -55,7 +62,7 @@ struct MapView: View {
             
         }
     }
-    
+        
     private var leadingContents: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 12)
@@ -114,10 +121,10 @@ struct MapView: View {
             }
             
             VStack(alignment: .leading, spacing: 4) {
-                Text("latitude  123")
+                Text("latitude  \(touchedCoordinate.latitude)")
                     .font(.pretend(type: .regular, size: 20))
                     .foregroundStyle(.gray00)
-                Text("longitude  123")
+                Text("longitude  \(touchedCoordinate.longitude)")
                     .font(.pretend(type: .regular, size: 20))
                     .foregroundStyle(.gray00)
             }
@@ -125,20 +132,51 @@ struct MapView: View {
     }
     
     private var trailingContents: some View {
-        VStack(alignment: .trailing, spacing: 4) {
-            VerticalDualButton(
-                topSystemImage: "mountain.2.fill",
-                bottomSystemImage: "house.and.flag.fill",
-                onTopTap:  { /* TODO: 상단 액션 */ },
-                onBottomTap:{ /* TODO: 하단 액션 */ }
-            )
+        
+        VStack(alignment: .center, spacing: 0) {
+            Button {
+                showAnnotationPanel.toggle()
+            } label: {
+                Image(systemName: "mountain.2.fill")
+                    .padding(10)
+            }
+            .frame(width: 70, height: 70)
+            .background(.gray01)
+            .foregroundStyle(.white)
+            .frame(minHeight: 44)
+            .buttonStyle(.plain)
+            .clipShape(RoundedRectangle(cornerRadius: 10))
+            
+            
+            Rectangle()
+                .fill(.white.opacity(0.45))
+                .frame(width: 60, height: 1)
+//                .padding(.horizontal, 12)
+                
+            
+            
+            Button {
+                
+            } label: {
+                Image(systemName: "house.and.flag.fill")
+            }
+            .frame(width: 70, height: 70)
+            .background(.gray01)
+            .foregroundStyle(.white)
+            .frame(minHeight: 44)
+            .buttonStyle(.plain)
+            .clipShape(RoundedRectangle(cornerRadius: 10))
             
             sliderButton
             
             if showSliderPanel {
                 sliderPanel
             }
+        
         }
+ 
+            
+            
     }
     
     private var sliderButton: some View {
