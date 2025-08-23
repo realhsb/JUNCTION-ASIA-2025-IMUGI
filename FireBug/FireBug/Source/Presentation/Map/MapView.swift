@@ -34,13 +34,13 @@ struct MapView: View {
             ForEach(fireRiskPoints) { point in
                 MapCircle(
                     center: point.coordinate,
-                    radius: CLLocationDistance(point.riskLevel * 1000) // 위험도에 따라 크기 조절
+                    radius: CLLocationDistance(100) // 위험도에 따라 크기 조절
                 )
-                .foregroundStyle(riskColor(for: point.riskLevel).opacity(0.5))
-                .stroke(riskColor(for: point.riskLevel), lineWidth: 1)
+                .foregroundStyle(.red)
+                .stroke(.black, lineWidth: 1)
             }
         }
-        .mapStyle(.hybrid(elevation: .realistic))
+        .mapStyle(.standard(elevation: .realistic))
     }
     
     var buttonStack: some View {
