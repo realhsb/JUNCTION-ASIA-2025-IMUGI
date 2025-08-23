@@ -17,60 +17,43 @@ struct MapView: View {
         )
     )
     
-    // 산불 위험 지점 데이터
-    let fireRiskPoints = FireRiskDataGenerator.generateFireRiskPoints()
+    // 전체 24시간 데이터셋 (한번에 생성되어 저장)
+    let fireRiskDataset = FireRiskDataGenerator.generateFullDataset()
+    
+    // 테스트용: 현재 시간 데이터 표시 (실제로는 사용자가 조회)
+    @State private var selectedHour = 23  // 가장 최근 시간
     
     var body: some View {
-        ZStack {
-            mapView
-            buttonStack
-        }
-        
-    }
-    
-    var mapView: some View {
-        Map(position: $cameraPosition) {
-            // 산불 위험 지점 표시
-            ForEach(fireRiskPoints) { point in
-                MapCircle(
-                    center: point.coordinate,
-                    radius: CLLocationDistance(100) // 위험도에 따라 크기 조절
-                )
-                .foregroundStyle(.red)
-                .stroke(.black, lineWidth: 1)
-            }
-        }
-        .mapStyle(.standard(elevation: .realistic))
-    }
-    
-    var buttonStack: some View {
-        HStack {
-            Spacer()
-            VStack {
-                Button {
-                    
-                } label: {
-                    Text("위험도")
+        VStack {
+            Map(position: $cameraPosition) {
+                // 선택된 시간대의 데이터 표시
+                ForEach(fireRiskDataset.getData(forHour: selectedHour)) { point in
+                    MapCircle(
+                        center: point.coordinate,
+                        radius: CLLocationDistance(300)
+                    )
+                    .foregroundStyle(.red)
                 }
-                
-                Spacer()
             }
+            .mapStyle(.hybrid(elevation: .realistic))
         }
     }
     
     func riskColor(for level: Double) -> Color {
         switch level {
-        case 0.8...1.0:
-            return .red        // 매우 높음
-        case 0.6..<0.8:
-            return .orange     // 높음
-        case 0.4..<0.6:
-            return .yellow     // 보통
-        case 0.2..<0.4:
-            return .green      // 낮음
-        default:
-            return .blue       // 매우 낮음
+        case 0.8...1.0: return .red
+        case 0.6..<0.8: return .orange
+        case 0.4..<0.6: return .yellow
+        case 0.2..<0.4: return .green
+        default: return .blue
         }
+    }
+    
+    var dateFormatter: DateFormatter {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MM/dd HH:mm"
+        formatter.locale = Locale(identifier: "ko_KR")
+        return formatter
     }
 }
 
