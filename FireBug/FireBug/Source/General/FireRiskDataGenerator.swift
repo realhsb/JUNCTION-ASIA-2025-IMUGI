@@ -102,7 +102,7 @@ struct FireRiskDataGenerator {
             let westBias = centerIndex < 5 ? 1.15 : (centerIndex < 10 ? 0.9 : 0.7)
             
             // 시간대별 점 개수 변화 (최근일수록 많음)
-            let pointCount = timeFactor > 0.5 ? Int.random(in: 6...9) : Int.random(in: 3...5)
+            let pointCount = timeFactor > 0.5 ? Int.random(in: 18...25) : Int.random(in: 12...17)
             
             for _ in 0..<pointCount {
                 // 시간 진행에 따른 분산 변화

@@ -11,7 +11,7 @@ import SwiftUI
 struct FireBugApp: App {
     var body: some Scene {
         WindowGroup {
-            MapContainerView()
+            ContentView()
         }
     }
 }
