@@ -21,6 +21,7 @@ struct MapView: View {
     @State private var showSliderPanel = false
     @State private var heatOpacity: Double = 0.26
     @State private var touchedCoordinate: CLLocationCoordinate2D = .init()
+    @State private var showCenterPannel = false
     
     // 전체 24시간 데이터셋 (한번에 생성되어 저장)
     let fireRiskDataset = FireRiskDataGenerator.generateFullDataset()
@@ -47,8 +48,33 @@ struct MapView: View {
                         }
                     }
                 }
+                
+                if showCenterPannel {
+                    ForEach(FireRiskCenter.kfsCenters) { loc in
+                        Annotation("", coordinate: loc.coordinate) {
+                            Image(systemName: "leaf.fill")
+                                .font(.system(size: 28))
+                                .symbolRenderingMode(.palette)
+                                .foregroundStyle(.green, .white)
+                                .shadow(radius: 2)
+                                .onTapGesture { touchedCoordinate = loc.coordinate }
+                        }
+                    }
+                    
+                    ForEach(FireStation.fireStations) { loc in
+                        Annotation("", coordinate: loc.coordinate) {
+                            Image(systemName: "fire.extinguisher.fill")
+                                .font(.system(size: 28))
+                                .symbolRenderingMode(.palette)
+                                .foregroundStyle(.orange, .white)
+                                .shadow(radius: 2)
+                                .onTapGesture { touchedCoordinate = loc.coordinate }
+                        }
+                    }
+                }
             }
             .mapStyle(.hybrid(elevation: .realistic))
+            
             VStack {
                 HStack(alignment: .top) {
                     leadingContents
@@ -62,11 +88,11 @@ struct MapView: View {
             
         }
     }
-        
+    
     private var leadingContents: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 12)
-                .fill(.gray01)
+                .fill(.gray01.opacity(0.8))
                 .frame(width: 268, height: 270)
             
             VStack(alignment: .leading, spacing: 20) {
@@ -101,7 +127,7 @@ struct MapView: View {
                     .foregroundStyle(.white01)
             }
             
-            Text("Pohang-si")
+            Text("Gyeongsangbuk-do")
                 .font(.pretend(type: .regular, size: 20))
                 .foregroundStyle(.gray00)
         }
@@ -132,58 +158,28 @@ struct MapView: View {
     }
     
     private var trailingContents: some View {
-        
-        VStack(alignment: .center, spacing: 0) {
-            Button {
-                showAnnotationPanel.toggle()
-            } label: {
-                Image(systemName: "mountain.2.fill")
-                    .padding(10)
-            }
-            .frame(width: 70, height: 70)
-            .background(.gray01)
-            .foregroundStyle(.white)
-            .frame(minHeight: 44)
-            .buttonStyle(.plain)
-            .clipShape(RoundedRectangle(cornerRadius: 10))
-            
-            
-            Rectangle()
-                .fill(.white.opacity(0.45))
-                .frame(width: 60, height: 1)
-//                .padding(.horizontal, 12)
-                
-            
-            
-            Button {
-                
-            } label: {
-                Image(systemName: "house.and.flag.fill")
-            }
-            .frame(width: 70, height: 70)
-            .background(.gray01)
-            .foregroundStyle(.white)
-            .frame(minHeight: 44)
-            .buttonStyle(.plain)
-            .clipShape(RoundedRectangle(cornerRadius: 10))
+        VStack(alignment: .trailing, spacing: 8) {
+            VerticalDualButton(
+                topSystemImage: "mountain.2.fill",
+                bottomSystemImage: "house.and.flag.fill",
+                onTopTap: { showAnnotationPanel.toggle() },
+                onBottomTap: { showCenterPannel.toggle() }
+            )
             
             sliderButton
+                .shadow(radius: 6)
             
             if showSliderPanel {
                 sliderPanel
             }
-        
         }
- 
-            
-            
     }
     
     private var sliderButton: some View {
         Button {
             withAnimation(.snappy) { showSliderPanel.toggle() }
         } label: {
-            RoundedRectangle(cornerRadius: 20, style: .continuous)
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
                 .fill(showSliderPanel ? .gray00 : .gray01)
                 .frame(width: 62, height: 62)
                 .overlay(

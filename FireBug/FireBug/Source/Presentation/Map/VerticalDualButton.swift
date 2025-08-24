@@ -16,7 +16,7 @@ struct VerticalDualButton: View {
     var onBottomTap: () -> Void
 
     // 스타일 커스터마이즈
-    var width: CGFloat = 52
+    var width: CGFloat = 62
     var cornerRadius: CGFloat = 12
 
     var body: some View {
@@ -24,7 +24,7 @@ struct VerticalDualButton: View {
             // 상단 버튼
             Button(action: { onTopTap() }) {
                 symbol(topSystemImage)
-                    .frame(maxWidth: .infinity, minHeight: 44)
+                    .frame(maxWidth: .infinity, minHeight: 46)
             }
             .buttonStyle(.plain)
 
@@ -32,12 +32,12 @@ struct VerticalDualButton: View {
             Rectangle()
                 .fill(.white.opacity(0.45))
                 .frame(height: 1)
-                .padding(.horizontal, 12)
+//                .padding(.horizontal, 12)
 
             // 하단 버튼
             Button(action: { onBottomTap() }) {
                 symbol(bottomSystemImage)
-                    .frame(maxWidth: .infinity, minHeight: 44)
+                    .frame(maxWidth: .infinity, minHeight: 46)
             }
             .buttonStyle(.plain)
         }
@@ -58,7 +58,7 @@ struct VerticalDualButton: View {
     private func symbol(_ name: String) -> some View {
         Image(systemName: name)
             .symbolRenderingMode(.monochrome)
-            .font(.system(size: 22, weight: .semibold))
+            .font(.system(size: 20, weight: .semibold))
             .foregroundStyle(.white)
             .frame(height: 2)
             .contentShape(Rectangle()) // 탭 영역 확보
