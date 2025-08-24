@@ -162,3 +162,20 @@ struct FireRiskDataGenerator {
         return points
     }
 }
+
+// MARK: - 산림청 위치
+struct KFSLocation: Identifiable {
+    let id = UUID()
+    let coordinate: CLLocationCoordinate2D
+}
+
+struct FireRiskCenter {
+    static let kfsCenters: [KFSLocation] = [
+        .init(coordinate: .init(latitude: 36.552203,  longitude: 128.682800)), // 남부지방산림청
+        .init(coordinate: .init(latitude: 36.0725171, longitude: 128.349741)),// 구미국유림관리소
+        .init(coordinate: .init(latitude: 36.821193,  longitude: 128.588967)),// 영주국유림관리소
+        .init(coordinate: .init(latitude: 36.832297,  longitude: 128.632367)),// 영주국유림관리소2
+        .init(coordinate: .init(latitude: 36.541463,  longitude: 129.402471)),// 영덕국유림관리소
+        .init(coordinate: .init(latitude: 36.986477,  longitude: 129.394694)) // 울진국유림관리소
+    ]
+}

@@ -21,6 +21,7 @@ struct MapView: View {
     @State private var showSliderPanel = false
     @State private var heatOpacity: Double = 0.26
     @State private var touchedCoordinate: CLLocationCoordinate2D = .init()
+    @State private var showCenterPannel = false
     
     // 전체 24시간 데이터셋 (한번에 생성되어 저장)
     let fireRiskDataset = FireRiskDataGenerator.generateFullDataset()
@@ -47,6 +48,25 @@ struct MapView: View {
                         }
                     }
                 }
+                
+                if showCenterPannel {
+                    ForEach(FireRiskCenter.kfsCenters) { loc in
+                        Annotation("", coordinate: loc.coordinate) {
+                            // 커스텀 이미지: 에셋에 "kfsCenter"가 있다면 사용
+                            // Image("kfsCenter")
+                            //   .resizable().scaledToFit()
+                            //   .frame(width: 28, height: 28)
+                            
+                            // 대안: 시스템 심볼
+                            Image(systemName: "leaf.circle.fill")
+                                .font(.system(size: 28))
+                                .symbolRenderingMode(.palette)
+                                .foregroundStyle(.green, .white)
+                                .shadow(radius: 2)
+                                .onTapGesture { touchedCoordinate = loc.coordinate }
+                        }
+                    }
+                }
             }
             .mapStyle(.hybrid(elevation: .realistic))
             VStack {
@@ -62,7 +82,7 @@ struct MapView: View {
             
         }
     }
-        
+    
     private var leadingContents: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 12)
@@ -101,7 +121,7 @@ struct MapView: View {
                     .foregroundStyle(.white01)
             }
             
-            Text("Pohang-si")
+            Text("Gyeongsangbuk-do")
                 .font(.pretend(type: .regular, size: 20))
                 .foregroundStyle(.gray00)
         }
@@ -151,12 +171,12 @@ struct MapView: View {
             Rectangle()
                 .fill(.white.opacity(0.45))
                 .frame(width: 60, height: 1)
-//                .padding(.horizontal, 12)
-                
+            //                .padding(.horizontal, 12)
+            
             
             
             Button {
-                
+                showCenterPannel.toggle()
             } label: {
                 Image(systemName: "house.and.flag.fill")
             }
@@ -168,15 +188,16 @@ struct MapView: View {
             .clipShape(RoundedRectangle(cornerRadius: 10))
             
             sliderButton
+                .padding(.top, 12)
             
             if showSliderPanel {
                 sliderPanel
             }
-        
+            
         }
- 
-            
-            
+        
+        
+        
     }
     
     private var sliderButton: some View {
