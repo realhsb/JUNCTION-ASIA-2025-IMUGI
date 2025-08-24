@@ -171,11 +171,28 @@ struct KFSLocation: Identifiable {
 
 struct FireRiskCenter {
     static let kfsCenters: [KFSLocation] = [
-        .init(coordinate: .init(latitude: 36.552203,  longitude: 128.682800)), // 남부지방산림청
-        .init(coordinate: .init(latitude: 36.0725171, longitude: 128.349741)),// 구미국유림관리소
-        .init(coordinate: .init(latitude: 36.821193,  longitude: 128.588967)),// 영주국유림관리소
-        .init(coordinate: .init(latitude: 36.832297,  longitude: 128.632367)),// 영주국유림관리소2
-        .init(coordinate: .init(latitude: 36.541463,  longitude: 129.402471)),// 영덕국유림관리소
-        .init(coordinate: .init(latitude: 36.986477,  longitude: 129.394694)) // 울진국유림관리소
+        .init(coordinate: .init(latitude: 36.552203,  longitude: 128.682800)),    // 남부지방산림청
+        .init(coordinate: .init(latitude: 36.0725171, longitude: 128.349741)),    // 구미국유림관리소
+        .init(coordinate: .init(latitude: 36.821193,  longitude: 128.588967)),    // 영주국유림관리소
+        .init(coordinate: .init(latitude: 36.832297,  longitude: 128.632367)),    // 영주국유림관리소2
+        .init(coordinate: .init(latitude: 36.541463,  longitude: 129.402471)),    // 영덕국유림관리소
+        .init(coordinate: .init(latitude: 36.986477,  longitude: 129.394694)),    // 울진국유림관리소
+    ]
+}
+
+// MARK: - 소방서 위치
+struct FireStationLocation: Identifiable {
+    let id = UUID()
+    let coordinate: CLLocationCoordinate2D
+}
+
+struct FireStation {
+    static let fireStations: [FireStationLocation] = [
+        .init(coordinate: .init(latitude: 36.116081, longitude: 129.348835)),     // 홍해119안전센터
+        .init(coordinate: .init(latitude: 36.620626, longitude: 128.727193)),     // 안동소방서
+        .init(coordinate: .init(latitude: 36.093238, longitude: 129.385534)),     // 장량119안전센터
+        .init(coordinate: .init(latitude: 36.065960, longitude: 129.383624)),     // 두호119안전센터
+        .init(coordinate: .init(latitude: 36.025102, longitude: 129.368902)),     // 해도119안전센터
+        .init(coordinate: .init(latitude: 36.031824, longitude: 129.326202))      // 효자119안전센터
     ]
 }

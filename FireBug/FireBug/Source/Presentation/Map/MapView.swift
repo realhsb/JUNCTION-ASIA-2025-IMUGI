@@ -52,7 +52,7 @@ struct MapView: View {
                 if showCenterPannel {
                     ForEach(FireRiskCenter.kfsCenters) { loc in
                         Annotation("", coordinate: loc.coordinate) {
-                            Image(systemName: "leaf.circle.fill")
+                            Image(systemName: "leaf.fill")
                                 .font(.system(size: 28))
                                 .symbolRenderingMode(.palette)
                                 .foregroundStyle(.green, .white)
@@ -60,9 +60,21 @@ struct MapView: View {
                                 .onTapGesture { touchedCoordinate = loc.coordinate }
                         }
                     }
+                    
+                    ForEach(FireStation.fireStations) { loc in
+                        Annotation("", coordinate: loc.coordinate) {
+                            Image(systemName: "fire.extinguisher.fill")
+                                .font(.system(size: 28))
+                                .symbolRenderingMode(.palette)
+                                .foregroundStyle(.orange, .white)
+                                .shadow(radius: 2)
+                                .onTapGesture { touchedCoordinate = loc.coordinate }
+                        }
+                    }
                 }
             }
             .mapStyle(.hybrid(elevation: .realistic))
+            
             VStack {
                 HStack(alignment: .top) {
                     leadingContents
