@@ -17,7 +17,7 @@ struct MapView: View {
         )
     )
     
-    @State private var showAnnotationPanel = false
+    @State private var showAnnotationPannel = false
     @State private var showSliderPanel = false
     @State private var heatOpacity: Double = 0.26
     @State private var touchedCoordinate: CLLocationCoordinate2D = .init()
@@ -32,22 +32,31 @@ struct MapView: View {
     var body: some View {
         ZStack {
             Map(position: $cameraPosition) {
-                // 선택된 시간대의 데이터 표시
-                if showAnnotationPanel {
-                    ForEach(fireRiskDataset.getData(forHour: selectedHour)) { point in
-                        if heatOpacity <= point.riskLevel {
-                            Annotation("", coordinate: point.coordinate) {
-                                Circle()
-                                    .fill(.red.opacity(0.8))
-                                    .stroke(.red, lineWidth: 1)
-                                    .frame(width: 15, height: 15)
-                                    .onTapGesture {
-                                        touchedCoordinate = point.coordinate
-                                    }
-                            }
+                
+                ForEach(fireRiskDataset.getData(forHour: selectedHour)) { point in
+                    if heatOpacity <= point.riskLevel {
+                        Annotation("", coordinate: point.coordinate) {
+                            Circle()
+                                .fill(.red.opacity(0.8))
+            
+                                .stroke(.red, lineWidth: 1)
+                                .frame(width: 15, height: 15)
+                                .onTapGesture {
+                                    touchedCoordinate = point.coordinate
+                                }
                         }
                     }
                 }
+                // 선택된 시간대의 데이터 표시
+                if showAnnotationPannel {
+                    ForEach(riskZones, id: \.level) { zone in
+                                MapPolygon(coordinates: zone.boundary)
+                                    .foregroundStyle(riskColor(for: zone.level).opacity(0.7))
+                                    .stroke(riskColor(for: zone.level), lineWidth: 2)
+                            }
+                }
+                
+                
                 
                 if showCenterPannel {
                     ForEach(FireRiskCenter.kfsCenters) { loc in
@@ -162,7 +171,7 @@ struct MapView: View {
             VerticalDualButton(
                 topSystemImage: "mountain.2.fill",
                 bottomSystemImage: "house.and.flag.fill",
-                onTopTap: { showAnnotationPanel.toggle() },
+                onTopTap: { showAnnotationPannel.toggle() },
                 onBottomTap: { showCenterPannel.toggle() }
             )
             
